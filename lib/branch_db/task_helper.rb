@@ -10,7 +10,7 @@ module BranchDb # :nodoc:
     
     def environment_options
       { 
-        :overwrite => ENV['OVERWRITE']
+        :overwrite => (ENV['OVERWRITE'] =~ /^(true|1)$/i) == 0
       }
     end
     

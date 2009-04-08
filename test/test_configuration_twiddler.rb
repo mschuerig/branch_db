@@ -1,7 +1,19 @@
-require File.dirname(__FILE__) + '/test_helper.rb'
+
+require 'test_helper'
 
 require 'branch_db/configuration_twiddler'
 require 'mocks'
+
+class MockConfiguration
+  def initialize(config)
+    @config = config
+  end
+  
+  def database_configuration
+    @config
+  end
+  include ::BranchDb::ConfigurationTwiddler
+end
 
 module RealDatabaseTests
   def test_master_branch
@@ -68,6 +80,11 @@ end
 
 class TestConfigurationTwiddlerSQLite < Test::Unit::TestCase
   def setup
+    create_mock_sqlite_db(
+      'db/development.sqlite3', 
+      'db/development_feature.sqlite3',
+      'db/test.sqlite3'
+    )
     @mock = MockConfiguration.new({
       'development' => {
         'database' => 'db/development.sqlite3',
@@ -79,11 +96,6 @@ class TestConfigurationTwiddlerSQLite < Test::Unit::TestCase
         'adapter' => 'sqlite3'
       }
     })
-
-    @tmpdir = FileUtils.mkdir_p(File.join(RAILS_ROOT, 'db'))
-    create_mock_sqlite_db('db/development.sqlite3')
-    create_mock_sqlite_db('db/development_feature.sqlite3')
-    create_mock_sqlite_db('db/test.sqlite3')
   end
   
   def teardown

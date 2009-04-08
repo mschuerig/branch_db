@@ -5,7 +5,7 @@ module BranchDb # :nodoc:
     def self.which(config)
       switcher = switchers.detect { |sw| sw.can_handle?(config) }
       unless switcher
-        $stderr.puts 'Your database adapter is not supported yet.'
+        $stderr.puts "Your database adapter (#{config['adapter']}) is not supported yet."
         switcher = self # double as null switcher
       end
       switcher
@@ -25,7 +25,7 @@ module BranchDb # :nodoc:
 
     def initialize(rails_env, config, branch, options = {})
       @rails_env, @config, @branch = rails_env, config, branch
-      @overwrite = (options[:overwrite] =~ /^(true|1)$/i) == 0
+      @overwrite = options[:overwrite]
     end
 
     def current

@@ -1,6 +1,5 @@
-require File.dirname(__FILE__) + '/test_helper.rb'
 
-require 'branch_db/switcher'
+require 'test_helper'
 
 class TestSwitcher < Test::Unit::TestCase
   

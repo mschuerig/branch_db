@@ -28,7 +28,7 @@ module BranchDb # :nodoc:
     end
     
     def branch_db_exists?(branch)
-      File.exist?(File.join(RAILS_ROOT, branch_db(branch)))
+      File.exists?(branch_db_path(branch))
     end
     
     def create_database(branch)
@@ -38,11 +38,18 @@ module BranchDb # :nodoc:
     end
     
     def drop_database(branch)
-      FileUtils.rm_f(branch_db(branch))
+      FileUtils.rm_f(branch_db_path(branch))
     end
 
     def copy_database(from_branch, to_branch)
-      FileUtils.cp(branch_db(from_branch), branch_db(to_branch))
+      FileUtils.cp(branch_db_path(from_branch), branch_db_path(to_branch))
     end
+    
+    private
+    
+    def branch_db_path(branch)
+      File.join(RAILS_ROOT, branch_db(branch))
+    end
+
   end
 end
