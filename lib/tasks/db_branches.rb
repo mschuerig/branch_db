@@ -27,11 +27,7 @@ namespace :db do
     
     desc "Copy databases from one branch to another. Default is from ORIG_BRANCH=master to BRANCH=<current branch>"
     task :copy => :setup do
-      if target_branch == current_branch
-        $stderr.puts "Cannot copy database to itself."
-      else
-        each_local_database { |switcher| switcher.copy_from(originating_branch) }
-      end
+      each_local_database { |switcher| switcher.copy_from(originating_branch) }
     end
 
     desc "Delete databases for a branch given by BRANCH"
