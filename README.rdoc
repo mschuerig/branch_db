@@ -20,10 +20,24 @@ Put the following block of code into config/environment.rb *before*
 Rails::Initializer.run. This code ensures that the database is 
 automatically switched, based on the checked out git branch.
 
+  # config/environment.rb
+  ...
   require 'branch_db/configuration_twiddler'
   Rails::Configuration.class_eval do
     include ::BranchDb::ConfigurationTwiddler
   end
+  ...
+
+In config/database.yml, mark the configuration that may have
+databases specific to current branch
+
+  # config/database.yml
+  development: &development
+    adapter: postgresql
+    database: myproject_development
+    host: localhost
+    port: 5432
+    per_branch: true
 
 To your Rakefile or a file in lib/tasks add
 
@@ -46,6 +60,16 @@ Then you can use these rake tasks to manage your databases.
 
   rake db:branches:delete
       Delete databases for a branch given by BRANCH
+
+Say, you have a configuration as above and you're currently on
+git branch "feature" when you decide that you need a database
+specific to this branch. Then
+
+  ~/projects/myproject (feature*)$ rake db:branches:copy ORIG_BRANCH=master
+
+will give you a copy of the database from branch "master".
+If your branch already has a database that you want to overwrite,
+add OVERWRITE=true to the command line.
 
 == REQUIREMENTS:
 

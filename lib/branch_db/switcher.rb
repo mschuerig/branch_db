@@ -25,7 +25,7 @@ module BranchDb # :nodoc:
 
     def initialize(rails_env, config, branch, options = {})
       @rails_env, @config, @branch = rails_env, config, branch
-      @overwrite = options[:overwrite]
+      @overwrite = (options[:overwrite] =~ /^(true|1)$/i) == 0
     end
 
     def current
