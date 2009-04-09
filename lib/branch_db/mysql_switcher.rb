@@ -23,6 +23,7 @@ module BranchDb # :nodoc:
     end
 
     def create_database(branch)
+      ### TODO when copying a database, determine charset and collation from original
       config = branch_config(branch)
       charset   = ENV['CHARSET']   || 'utf8'
       collation = ENV['COLLATION'] || 'utf8_general_ci'
@@ -42,7 +43,7 @@ module BranchDb # :nodoc:
     def existing_databases
       @existing_databases ||=
         begin
-          raw_dbs = `mysql -e 'SHOW DATABASES'`
+          raw_dbs = `mysql --user #{config['username']} -e 'SHOW DATABASES'`
           if $? == 0
             existing_dbs = raw_dbs.split("\n").drop(1)
             existing_dbs -= %w( information_schema )
@@ -53,11 +54,19 @@ module BranchDb # :nodoc:
     end
     
     def dump_command(config, dump_file)
-      %{mysqldump --user "#{config["username"]}" --host "#{config["host"]}" #{config["database"]} > #{dump_file}}
+      %{mysqldump #{command_options(config)} #{config["database"]} > #{dump_file}}
     end
     
     def load_command(config, dump_file)
-      %{mysql --user "#{config["username"]}" --host "#{config["host"]}" #{config["database"]} < #{dump_file}}
+      %{mysql #{command_options(config)} #{config["database"]} < #{dump_file}}
+    end
+    
+    def command_options(config)
+      returning opts = '' do
+        %w( user username password password host host).each_slice(2) do |o, k|
+          opts << " --#{o} #{config[k]}" if config[k]
+        end
+      end
     end
   end
 end

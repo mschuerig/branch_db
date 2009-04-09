@@ -26,6 +26,7 @@ module BranchDb # :nodoc:
     def initialize(rails_env, config, branch, options = {})
       @rails_env, @config, @branch = rails_env, config, branch
       @overwrite = options[:overwrite]
+      setup_environment
     end
 
     def current
@@ -99,6 +100,9 @@ module BranchDb # :nodoc:
 
     def branch_db_exists?(branch)
       false
+    end
+    
+    def setup_environment
     end
     
     def branch_db(branch)
