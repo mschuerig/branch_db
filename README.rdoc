@@ -39,7 +39,7 @@ databases specific to current branch
 
 To your Rakefile or a file in lib/tasks add
 
-  require 'tasks/db_branches.rb'
+  require 'tasks/db_branches'
 
 Then you can use these rake tasks to manage your databases.
 

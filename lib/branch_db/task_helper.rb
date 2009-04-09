@@ -9,9 +9,11 @@ module BranchDb # :nodoc:
     end
     
     def environment_options
-      { 
-        :overwrite => (ENV['OVERWRITE'] =~ /^(true|1)$/i) == 0
-      }
+      returning options = {} do
+        [:overwrite, :verbose].each do |opt|
+          options[opt] = (ENV[opt.to_s.upcase] =~ /^(true|1)$/i) == 0
+        end
+      end
     end
     
     def target_branch

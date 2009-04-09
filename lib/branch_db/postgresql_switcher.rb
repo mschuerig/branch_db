@@ -22,12 +22,6 @@ module BranchDb # :nodoc:
       super
     end
 
-    def setup_environment
-      %w( PGUSER username PGHOST host PGPORT port PGPASSWORD password ).each_slice(2) do |e, k|
-        ENV[e] = @config[k].to_s if @config[k]
-      end
-    end
-
     def create_database(branch)
       config = branch_config(branch).merge(
         'encoding' => @config['encoding'] || ENV['CHARSET'] || 'utf8')
@@ -59,11 +53,19 @@ module BranchDb # :nodoc:
     end
     
     def dump_command(config, dump_file)
-      %{pg_dump --clean #{config['database']} > #{dump_file}}
+      %{pg_dump #{command_options(config)} --clean #{config['database']} > #{dump_file}}
     end
     
     def load_command(config, dump_file)
-      %{psql -f "#{dump_file}" #{config['database']}}
+      %{psql #{command_options(config)} -f "#{dump_file}" #{config['database']}}
+    end
+
+    def command_options(config)
+      returning opts = '' do
+        %w( username host port ).each do |o|
+          opts << " --#{o}=#{config[o]}" if config[o]
+        end
+      end
     end
   end
 end

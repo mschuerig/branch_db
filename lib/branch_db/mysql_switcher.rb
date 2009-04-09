@@ -43,7 +43,7 @@ module BranchDb # :nodoc:
     def existing_databases
       @existing_databases ||=
         begin
-          raw_dbs = `mysql --user #{config['username']} -e 'SHOW DATABASES'`
+          raw_dbs = `mysql #{command_options(@config)} -e 'SHOW DATABASES'`
           if $? == 0
             existing_dbs = raw_dbs.split("\n").drop(1)
             existing_dbs -= %w( information_schema )

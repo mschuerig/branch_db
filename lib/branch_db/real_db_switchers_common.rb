@@ -25,7 +25,9 @@ module BranchDb # :nodoc:
       config = branch_config(branch)
       old_umask = File.umask(0077) # make created files readable only to the user
       dump_file = Tempfile.new('branchdb')
-      %x{#{dump_command(config, dump_file.path)}}
+      cmd = dump_command(config, dump_file.path)
+      puts cmd if verbose?
+      %x{#{cmd}}
       raise Error, "Unable to dump database #{config['database']}." unless $? == 0
       dump_file.path
     ensure
@@ -34,8 +36,10 @@ module BranchDb # :nodoc:
     
     def load_branch_db(branch, dump_file)
       config = branch_config(branch)
+      cmd = load_command(config, dump_file)
+      puts cmd if verbose?
       silence_stderr do
-        %x{{load_command(config, dump_file)}}
+        %x{#{cmd}}
       end
       raise Error, "Unable to load database #{config['database']}." unless $? == 0
     end
