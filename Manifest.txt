@@ -6,7 +6,9 @@ Rakefile
 branch_db.gemspec
 lib/branch_db.rb
 lib/branch_db/configuration_twiddler.rb
+lib/branch_db/mysql_switcher.rb
 lib/branch_db/postgresql_switcher.rb
+lib/branch_db/real_db_switchers_common.rb
 lib/branch_db/sqlite_switcher.rb
 lib/branch_db/switcher.rb
 lib/branch_db/task_helper.rb

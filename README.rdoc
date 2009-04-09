@@ -9,8 +9,6 @@ Give each git branch its own databases for ActiveRecord.
 == FEATURES/PROBLEMS:
 
 * alpha quality
-* only PostgreSQL and SQLite(3) are supported yet
-  (adding MySQL is trivial, I'll do it when I need it)
 * create, delete, copy git branch-specific databases using rake tasks
 * automatic switching based on currently checked out branch
 
