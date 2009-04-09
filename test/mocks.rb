@@ -30,7 +30,7 @@ module BranchDb
     @branch
   end
   
-  class PostgresqlSwitcher < Switcher
+  class MysqlSwitcher < Switcher
     include Recorder
     record :create_database, :drop_database, :load_branch_db
     record(:dump_branch_db) { 'the-dump-file' }
@@ -38,8 +38,16 @@ module BranchDb
     def existing_databases
       %w( testit_development testit_feature_development testit_test )
     end
-    def operations
-      @ops
+  end
+
+  ### FIXME this repetition is dumb
+  class PostgresqlSwitcher < Switcher
+    include Recorder
+    record :create_database, :drop_database, :load_branch_db
+    record(:dump_branch_db) { 'the-dump-file' }
+
+    def existing_databases
+      %w( testit_development testit_feature_development testit_test )
     end
   end
 

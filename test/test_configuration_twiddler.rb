@@ -57,8 +57,6 @@ class TestConfigurationTwiddlerPostgreSQL < Test::Unit::TestCase
   include RealDatabaseTests
 end
 
-=begin
-### TODO
 class TestConfigurationTwiddlerMysql < Test::Unit::TestCase
   def setup
     @mock = MockConfiguration.new({
@@ -76,7 +74,6 @@ class TestConfigurationTwiddlerMysql < Test::Unit::TestCase
   
   include RealDatabaseTests
 end
-=end
 
 class TestConfigurationTwiddlerSQLite < Test::Unit::TestCase
   def setup

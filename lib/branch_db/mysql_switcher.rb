@@ -3,14 +3,14 @@ require 'branch_db/switcher'
 
 module BranchDb # :nodoc:
 
-  class PostgresqlSwitcher < Switcher
+  class MysqlSwitcher < Switcher
     def self.can_handle?(config)
-      config['adapter'] == 'postgresql'
+      config['adapter'] == 'mysql'
     end
     
     def current
       current_branch = branch_db_exists?(@branch) ? @branch : 'master'
-      puts "#{@rails_env}: #{branch_db(current_branch)} (PostgreSQL)"
+      puts "#{@rails_env}: #{branch_db(current_branch)} (MySQL)"
     end
     
     protected
@@ -32,18 +32,18 @@ module BranchDb # :nodoc:
     end
     
     def create_database(branch)
-      config = branch_config(branch).merge(
-        'encoding' => @config['encoding'] || ENV['CHARSET'] || 'utf8')
-      ActiveRecord::Base.establish_connection(config.merge('database' => 'postgres', 'schema_search_path' => 'public'))
-      ActiveRecord::Base.connection.create_database(config['database'], config)
+      config = branch_config(branch)
+      charset   = ENV['CHARSET']   || 'utf8'
+      collation = ENV['COLLATION'] || 'utf8_general_ci'
+      ActiveRecord::Base.establish_connection(config.merge('database' => nil))
+      ActiveRecord::Base.connection.create_database(config['database'], :charset => (config['charset'] || charset), :collation => (config['collation'] || collation))
       ActiveRecord::Base.establish_connection(config)
-      nil
     end
     
     def drop_database(branch)
       config = branch_config(branch)
-      ActiveRecord::Base.establish_connection(config.merge('database' => 'postgres', 'schema_search_path' => 'public'))
-      ActiveRecord::Base.connection.drop_database(config['database'])
+      ActiveRecord::Base.establish_connection(config)
+      ActiveRecord::Base.connection.drop_database config['database']
       @existing_databases = nil
       nil
     end
@@ -58,10 +58,10 @@ module BranchDb # :nodoc:
     def existing_databases
       @existing_databases ||=
         begin
-          raw_dbs = `psql -l`
+          raw_dbs = `mysql -e 'SHOW DATABASES'`
           if $? == 0
-            existing_dbs = raw_dbs.split("\n").drop_while { |l| l !~ /^-/ }.drop(1).take_while { |l| l !~ /^\(/ }.map { |l| l.split('|')[0].strip }
-            existing_dbs.reject { |db| db =~ /^template/ }
+            existing_dbs = raw_dbs.split("\n").drop(1)
+            existing_dbs -= %w( information_schema )
           else
             raise Error, "Cannot determine existing databases."
           end
@@ -73,7 +73,7 @@ module BranchDb # :nodoc:
       config = branch_config(branch)
       old_umask = File.umask(0077) # make created files readable only to the user
       dump_file = Tempfile.new('branchdb')
-      `pg_dump --clean -U "#{config['username']}" --host="#{config['host']}" --port=#{config['port']} #{config['database']} > #{dump_file.path}`
+      `mysqldump --user "#{config["username"]}" --host "#{config["host"]}" #{config["database"]} > #{dump_file.path}`
       raise Error, "Unable to dump database #{config['database']}." unless $? == 0
       dump_file.path
     ensure
@@ -83,7 +83,7 @@ module BranchDb # :nodoc:
     def load_branch_db(branch, dump_file)
       config = branch_config(branch)
       silence_stderr do
-        `psql -U "#{config['username']}" -f "#{dump_file}" --host="#{config['host']}" --port=#{config['port']} #{config['database']}`
+        `mysql --user "#{config["username"]}" --host "#{config["host"]}" #{config["database"]} < #{dump_file}`
       end
       raise Error, "Unable to load database #{config['database']}." unless $? == 0
     end
