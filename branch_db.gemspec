@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{branch_db}
-  s.version = "0.0.7"
+  s.version = "0.0.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Michael Schuerig"]
@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = %q{Give each git branch its own databases for ActiveRecord.}
   s.email = ["michael@schuerig.de"]
   s.extra_rdoc_files = ["History.txt", "Manifest.txt", "README.rdoc"]
-  s.files = [".gitignore", "History.txt", "Manifest.txt", "README.rdoc", "Rakefile", "branch_db.gemspec", "lib/branch_db.rb", "lib/branch_db/configuration_twiddler.rb", "lib/branch_db/mysql_switcher.rb", "lib/branch_db/postgresql_switcher.rb", "lib/branch_db/real_db_switchers_common.rb", "lib/branch_db/sqlite_switcher.rb", "lib/branch_db/switcher.rb", "lib/branch_db/task_helper.rb", "lib/tasks/db_branches.rb", "test/mocks.rb", "test/test_configuration_twiddler.rb", "test/test_helper.rb", "test/test_postgresql_switcher.rb", "test/test_sqlite_switcher.rb", "test/test_switcher.rb"]
+  s.files = [".gitignore", "History.txt", "Manifest.txt", "README.rdoc", "Rakefile", "branch_db.gemspec", "lib/branch_db.rb", "lib/branch_db/configuration_twiddler.rb", "lib/branch_db/mysql_switcher.rb", "lib/branch_db/postgresql_switcher.rb", "lib/branch_db/real_db_switchers_common.rb", "lib/branch_db/sqlite_switcher.rb", "lib/branch_db/switcher.rb", "lib/branch_db/task_helper.rb", "lib/tasks/db_branches.rb", "rails/properties.rb", "test/mocks.rb", "test/test_configuration_twiddler.rb", "test/test_helper.rb", "test/test_postgresql_switcher.rb", "test/test_sqlite_switcher.rb", "test/test_switcher.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/mschuerig/branch_db}
   s.rdoc_options = ["--main", "README.rdoc"]

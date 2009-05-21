@@ -13,6 +13,7 @@ lib/branch_db/sqlite_switcher.rb
 lib/branch_db/switcher.rb
 lib/branch_db/task_helper.rb
 lib/tasks/db_branches.rb
+rails/properties.rb
 test/mocks.rb
 test/test_configuration_twiddler.rb
 test/test_helper.rb
