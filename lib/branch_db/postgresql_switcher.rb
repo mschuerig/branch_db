@@ -18,10 +18,6 @@ module BranchDb # :nodoc:
     
     protected
     
-    def self.show_branches(rails_env, config)
-      super
-    end
-
     def create_database(branch)
       config = branch_config(branch).merge(
         'encoding' => @config['encoding'] || ENV['CHARSET'] || 'utf8')
@@ -35,21 +31,18 @@ module BranchDb # :nodoc:
       config = branch_config(branch)
       ActiveRecord::Base.establish_connection(config.merge('database' => 'postgres', 'schema_search_path' => 'public'))
       ActiveRecord::Base.connection.drop_database(config['database'])
-      @existing_databases = nil
+      reset_existing_databases
       nil
     end
     
-    def existing_databases
-      @existing_databases ||=
-        begin
-          raw_dbs = `psql -l`
-          if $? == 0
-            existing_dbs = raw_dbs.split("\n").drop_while { |l| l !~ /^-/ }.drop(1).take_while { |l| l !~ /^\(/ }.map { |l| l.split('|')[0].strip }
-            existing_dbs.reject { |db| db =~ /^template/ }
-          else
-            raise Error, "Cannot determine existing databases."
-          end
-        end
+    def find_existing_databases
+      raw_dbs = `psql -l`
+      if $? == 0
+        existing_dbs = raw_dbs.split("\n").drop_while { |l| l !~ /^-/ }.drop(1).take_while { |l| l !~ /^\(/ }.map { |l| l.split('|')[0].strip }
+        existing_dbs.reject { |db| db =~ /^template/ }
+      else
+        raise Error, "Cannot determine existing databases."
+      end
     end
     
     def dump_command(config, dump_file)

@@ -11,10 +11,22 @@ module BranchDb # :nodoc:
       end
     end
 
+    def find_existing_databases
+      raise Error, "Classes including RealDbSwitchersCommon must implement #find_existing_databases."
+    end
+
+    def existing_databases
+      @existing_databases ||= find_existing_databases
+    end
+
+    def reset_existing_databases
+      @existing_databases = nil
+    end
+
     def branch_db_exists?(branch)
       existing_databases.include?(branch_db(branch))
     end
-    
+
     def copy_database(from_branch, to_branch)
       dump_file = dump_branch_db(from_branch)
       load_branch_db(to_branch, dump_file)
