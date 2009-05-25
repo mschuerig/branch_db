@@ -10,15 +10,15 @@ module BranchDb # :nodoc:
       end
       switcher
     end
-    
+
     def self.can_handle?(config)
       raise Error, "Subclasses of BranchDb::Switcher must implement #can_handle?(config)."
     end
-    
+
     def self.create(rails_env, config, branch, options = {})
       which(config).new(rails_env, config, branch, options)
     end
-    
+
     def self.branches(rails_env, config)
       self.which(config).show_branches(rails_env, config)
     end
@@ -32,17 +32,17 @@ module BranchDb # :nodoc:
     def current
       # Must be implemented in subclasses.
     end
-    
+
     def exists?
       branch_db_exists?(@branch)
     end
-    
+
     def switch!
       if exists?
         @config.replace(branch_config(@branch))
       end
     end
-    
+
     def create_empty_database
       db = branch_db(@branch)
       if branch_db_exists?(@branch)
@@ -58,13 +58,13 @@ module BranchDb # :nodoc:
       create_database(@branch)
       yield if block_given?
     end
-    
+
     def delete_database
       ensure_branch_db_exists!(@branch)
       puts "Dropping existing database #{branch_db(@branch)}..."
       drop_database(@branch)
     end
-    
+
     def copy_from(from_branch)
       ensure_branch_db_exists!(from_branch)
 
@@ -73,25 +73,19 @@ module BranchDb # :nodoc:
         copy_database(from_branch, @branch)
       end
     end
-    
+
     protected
-    
+
     def self.show_branches(rails_env, config)
-      case per_branch = config['per_branch']
-      when true
+      if config['per_branch']
         puts "#{rails_env}: Has branch databases. Cannot determine which ones."
-#      when Hash
-#        puts "#{rails_env}:"
-#        per_branch.each do |db|
-#          puts "  #{db}"
-#        end
       end
     end
 
     def verbose?
       @verbose
     end
-    
+
     def branch_config(branch)
       @config.merge('database' => branch_db(branch))
     end
@@ -105,23 +99,23 @@ module BranchDb # :nodoc:
     def branch_db_exists?(branch)
       false
     end
-    
+
     def branch_db(branch)
       # Must be implemented in subclasses.
     end
-    
+
     def create_database(branch)
       # Must be implemented in subclasses.
     end
-    
+
     def drop_database(branch)
       # Must be implemented in subclasses.
     end
-    
+
     def copy_database(from_branch, to_branch)
       # Must be implemented in subclasses.
     end
-    
+
     private
 
     def self.switchers

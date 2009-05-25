@@ -3,7 +3,7 @@ require 'branch_db'
 
 module BranchDb # :nodoc
   module ConfigurationTwiddler
-    
+
     def self.included(base)
       base.send(:alias_method, :database_configuration_without_branches, :database_configuration)
       base.send(:alias_method, :database_configuration, :database_configuration_with_branches)

@@ -5,7 +5,7 @@ require 'mocks'
 class TestSqliteSwitcher < Test::Unit::TestCase
   def setup
     create_mock_sqlite_db(
-      'db/development.sqlite3', 
+      'db/development.sqlite3',
       'db/development_feature.sqlite3',
       'db/test.sqlite3'
     )
@@ -31,7 +31,7 @@ class TestSqliteSwitcher < Test::Unit::TestCase
     branch = options.delete(:branch) || 'feature'
     BranchDb::SqliteSwitcher.new(env, @config[env], branch, options)
   end
-  
+
   def test_branches
     assert_stdout "development: Has branch databases. Cannot determine which ones.\n" do
       BranchDb::Switcher.branches('development', @config['development'])

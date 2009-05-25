@@ -7,7 +7,7 @@ module BranchDb # :nodoc:
     def current_branch
       BranchDb::current_repo_branch(true)
     end
-    
+
     def environment_options
       returning options = {} do
         [:overwrite, :verbose].each do |opt|
@@ -15,7 +15,7 @@ module BranchDb # :nodoc:
         end
       end
     end
-    
+
     def target_branch
       ENV['BRANCH'] || current_branch
     end
@@ -23,7 +23,7 @@ module BranchDb # :nodoc:
     def originating_branch
       ENV['ORIG_BRANCH'] || 'master' ### TODO determine originating branch
     end
-    
+
     def each_local_config
       ActiveRecord::Base.configurations.each do |rails_env, config|
         next unless config['database']
@@ -38,7 +38,7 @@ module BranchDb # :nodoc:
         end
       end
     end
-    
+
     def each_local_database(*args)
       options = args.last.kind_of?(Hash) ? args.pop : {}
       options = options.reverse_merge(environment_options)

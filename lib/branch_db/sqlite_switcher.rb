@@ -12,9 +12,9 @@ module BranchDb # :nodoc:
       current_branch = branch_db_exists?(@branch) ? @branch : 'master'
       puts "#{@rails_env}: #{rails_root_relative(branch_db(current_branch))} (SQLite)"
     end
-    
+
     protected
-    
+
     def self.show_branches(rails_env, config)
       super
     end
@@ -26,17 +26,17 @@ module BranchDb # :nodoc:
         @config['database'].sub(/(.+)\./, "\\1_#{branch}.")
       end
     end
-    
+
     def branch_db_exists?(branch)
       File.exists?(branch_db_path(branch))
     end
-    
+
     def create_database(branch)
       config = branch_config(branch)
       ActiveRecord::Base.establish_connection(config)
       ActiveRecord::Base.connection
     end
-    
+
     def drop_database(branch)
       FileUtils.rm_f(branch_db_path(branch))
     end
@@ -44,9 +44,9 @@ module BranchDb # :nodoc:
     def copy_database(from_branch, to_branch)
       FileUtils.cp(branch_db_path(from_branch), branch_db_path(to_branch))
     end
-    
+
     private
-    
+
     def branch_db_path(branch)
       File.join(RAILS_ROOT, branch_db(branch))
     end

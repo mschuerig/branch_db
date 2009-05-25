@@ -22,9 +22,9 @@ class TestPostgresqlSwitcher < Test::Unit::TestCase
     branch = options.delete(:branch) || 'feature'
     BranchDb::PostgresqlSwitcher.new(env, @config[env], branch, options)
   end
-  
+
   def test_branches
-    assert_stdout "development: Has branch databases. Cannot determine which ones.\n" do
+    assert_stdout "development: testit_development, testit_feature_development.\n" do
       BranchDb::Switcher.branches('development', @config['development'])
     end
     assert_stdout "" do

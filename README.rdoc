@@ -15,7 +15,7 @@ Give each git branch its own databases for ActiveRecord.
 == SYNOPSIS:
 
 Put the following block of code into config/environment.rb *before*
-Rails::Initializer.run. This code ensures that the database is 
+Rails::Initializer.run. This code ensures that the database is
 automatically switched, based on the checked out git branch.
 
   # config/environment.rb

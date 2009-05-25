@@ -7,14 +7,14 @@ namespace :db do
       require 'branch_db/task_helper'
       include BranchDb::TaskHelper
     end
-    
+
     desc "List all branch databases"
     task :list => :setup do
       each_local_config do |rails_env, config|
         BranchDb::Switcher.branches(rails_env, config)
       end
     end
-    
+
     desc "Currently selected databases."
     task :current => :setup do
       each_local_database { |switcher| switcher.current }
@@ -24,7 +24,7 @@ namespace :db do
     task :create => :setup do
       each_local_database { |switcher| switcher.create_empty_database }
     end
-    
+
     desc "Copy databases from one branch to another. Default is from ORIG_BRANCH=master to BRANCH=<current branch>"
     task :copy => :setup do
       each_local_database { |switcher| switcher.copy_from(originating_branch) }

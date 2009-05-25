@@ -6,21 +6,17 @@ module BranchDb # :nodoc:
 
   class MysqlSwitcher < Switcher
     include RealDbSwitchersCommon
-    
+
     def self.can_handle?(config)
       config['adapter'] == 'mysql'
     end
-    
+
     def current
       current_branch = branch_db_exists?(@branch) ? @branch : 'master'
       puts "#{@rails_env}: #{branch_db(current_branch)} (MySQL)"
     end
-    
+
     protected
-    
-    def self.show_branches(rails_env, config)
-      super
-    end
 
     def create_database(branch)
       ### TODO when copying a database, determine charset and collation from original
@@ -31,7 +27,7 @@ module BranchDb # :nodoc:
       ActiveRecord::Base.connection.create_database(config['database'], :charset => (config['charset'] || charset), :collation => (config['collation'] || collation))
       ActiveRecord::Base.establish_connection(config)
     end
-    
+
     def drop_database(branch)
       config = branch_config(branch)
       ActiveRecord::Base.establish_connection(config)
@@ -39,8 +35,8 @@ module BranchDb # :nodoc:
       reset_existing_databases
       nil
     end
-    
-    def find_existing_databases
+
+    def self.find_existing_databases
       raw_dbs = `mysql #{command_options(@config)} -e 'SHOW DATABASES'`
       if $? == 0
         existing_dbs = raw_dbs.split("\n").drop(1)
@@ -49,15 +45,15 @@ module BranchDb # :nodoc:
         raise Error, "Cannot determine existing databases."
       end
     end
-    
+
     def dump_command(config, dump_file)
       %{mysqldump #{command_options(config)} #{config["database"]} > #{dump_file}}
     end
-    
+
     def load_command(config, dump_file)
       %{mysql #{command_options(config)} #{config["database"]} < #{dump_file}}
     end
-    
+
     def command_options(config)
       returning opts = '' do
         %w( user username password password host host).each_slice(2) do |o, k|

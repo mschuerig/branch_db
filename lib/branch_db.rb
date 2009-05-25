@@ -4,7 +4,7 @@ $:.unshift(File.dirname(__FILE__)) unless
 module BranchDb
   VERSION = '0.0.9'
   DEFAULT_BRANCH = 'master'
-  
+
   class Error < StandardError; end
 
   def self.current_repo_branch(raise_on_error = false)
