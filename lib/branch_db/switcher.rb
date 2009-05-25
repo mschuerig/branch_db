@@ -69,7 +69,7 @@ module BranchDb # :nodoc:
       ensure_branch_db_exists!(from_branch)
 
       create_empty_database do
-        puts "Copying data from #{from_branch}..."
+        puts "Copying data from #{branch_db(from_branch)}..."
         copy_database(from_branch, @branch)
       end
     end
